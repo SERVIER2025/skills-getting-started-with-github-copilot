@@ -1,0 +1,33 @@
+name: Pull Redis Docker Image
+
+on:
+  workflow_dispatch:
+    inputs:
+      redis_tag:
+        description: "Redis image tag (e.g. latest, 7.2-alpine)"
+        required: false
+        default: "latest"
+
+jobs:
+  pull-redis:
+    name: Pull and inspect Redis image
+    runs-on: ubuntu-latest
+    permissions: {}
+
+    steps:
+      - name: Pull Redis image
+        run: |
+          TAG="${{ github.event.inputs.redis_tag }}"
+          IMAGE="redis:${TAG}"
+          echo "Pulling ${IMAGE} ..."
+          docker pull "${IMAGE}"
+
+      - name: Show image info
+        run: |
+          TAG="${{ github.event.inputs.redis_tag }}"
+          IMAGE="redis:${TAG}"
+          echo "=== docker images ==="
+          docker images "${IMAGE}"
+          echo ""
+          echo "=== docker inspect ==="
+          docker inspect "${IMAGE}"
